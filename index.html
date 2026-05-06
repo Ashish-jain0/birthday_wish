@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Happy Birthday!</title>
+    <meta charset="utf-8" />
+    <meta name="language" content="en-us" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Open Graph Meta Tags for Social Media Previews -->
+    <meta property="og:title" content="Happy Birthday!" />
+    <meta property="og:description" content="A special birthday wish just for you!" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Anti-Caching Meta Tags (Tells crawlers not to cache the old page) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <style type="text/css">
+      * {
+        background: #fff;
+      }
+
+      #loveHeart {
+        background: transparent;
+        background: url("smile.gif") no-repeat center;
+      }
+      #copyright {
+        font-family: "Montserrat", sans-serif;
+      }
+      #copyright a {
+        text-decoration: none;
+      }
+      #copyright a:hover {
+        text-decoration: none;
+        color: royalblue;
+      }
+      #hbd_song {
+        display: none;
+      }
+      #disc {
+        color: lightgray;
+        font-weight: bold;
+        font-size: 13px;
+      }
+    </style>
+
+    <link href="css/style1.css" type="text/css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+      rel="stylesheet"
+    />
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript">
+      // Immediately set the title using CONFIG to prevent "Ashish" from flashing
+      if (typeof CONFIG !== 'undefined' && CONFIG.name) {
+          document.title = "Happy Birthday " + CONFIG.name;
+      }
+    </script>
+    <script type="text/javascript" src="js/birthday.js"></script>
+    <script type="text/javascript" src="js/hbd.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+
+  <body>
+    <div style="padding-top: 10px;" class="section">
+		<div class="columns">
+			<div class="column is-12">
+				<center>
+					<audio id="bg-audio" controls loop>
+						<source id="audio-source" src="song.mp3" type="audio/mpeg">
+					</audio>
+					<br />
+					<span class="disc">Disclaimer : Hey Man, This time stuck with Autoplay thing, Just Play it Manually, Scroll your screen and Enjoy! For Better view Use Laptop </span>
+				</center>
+			</div>
+		</div>
+		<br />
+		<br />
+			<div class="columns"> 
+				<div id="code" class="column is-6 is-offset-2">
+					<!-- Dynamic content will be injected by js/config.js -->
+				</div>
+				<div id="loveHeart" class="is-4 column">
+					<canvas id="garden" style="display:none"></canvas>
+					
+				</div>
+			</div>
+			<br />
+			<hr />
+			<div class="columns">
+				<div class="column is-12" id="copyright">
+					<center>
+						<p>Made with love by <span id="creator-name">Ashish Jain</span></p>
+						<div style="margin-top: 10px; display: flex; justify-content: center; gap: 20px;">
+							<a id="ig-link" href="#" target="_blank" style="color: #E1306C; font-size: 20px; display: flex; align-items: center; gap: 5px; text-decoration: none;">
+								<i class="fab fa-instagram" style="font-size: 24px;"></i>
+								<span style="font-weight: 500; font-family: 'Montserrat', sans-serif;">Instagram</span>
+							</a>
+							<a id="sc-link" href="#" target="_blank" style="color: #e5e200; font-size: 20px; display: flex; align-items: center; gap: 5px; text-decoration: none; text-shadow: 0px 0px 1px rgba(0,0,0,0.2);">
+								<i class="fab fa-snapchat-ghost" style="font-size: 24px;"></i>
+								<span style="font-weight: 500; font-family: 'Montserrat', sans-serif; color: #666;">Snapchat</span>
+							</a>
+						</div>
+					</center>
+				</div>
+			</div>
+	</div>
+    <script type="text/javascript">
+      // Update page title
+      document.title = "Happy Birthday " + CONFIG.name;
+      
+      // Update creator name in footer
+      $("#creator-name").text(CONFIG.creator);
+      
+      // Update social links
+      if (CONFIG.socialLinks) {
+          if (CONFIG.socialLinks.instagram) $("#ig-link").attr("href", CONFIG.socialLinks.instagram);
+          else $("#ig-link").hide();
+          
+          if (CONFIG.socialLinks.snapchat) $("#sc-link").attr("href", CONFIG.socialLinks.snapchat);
+          else $("#sc-link").hide();
+      } else {
+          $("#ig-link, #sc-link").hide();
+      }
+      
+      // Update audio source
+      if (CONFIG.musicPath) {
+          $("#audio-source").attr("src", CONFIG.musicPath);
+          $("#bg-audio")[0].load();
+      }
+
+      var offsetX = $("#loveHeart").width() / 2;
+      var offsetY = $("#loveHeart").height() / 2 - 55;
+      
+      // Function to get ordinal suffix
+      function getOrdinal(d) {
+          if (d > 3 && d < 21) return 'th';
+          switch (d % 10) {
+              case 1:  return "st";
+              case 2:  return "nd";
+              case 3:  return "rd";
+              default: return "th";
+          }
+      }
+
+      // Populate Dynamic Code Content
+      function populateCode() {
+          const monthName = MONTH_NAMES[CONFIG.dob.month - 1];
+          const birthdayStr = `${monthName} ${CONFIG.dob.day}${getOrdinal(CONFIG.dob.day)}`;
+          const dateCondition = `${CONFIG.celebrationYear}-${CONFIG.dob.month.toString().padStart(2, '0')}-${CONFIG.dob.day.toString().padStart(2, '0')}`;
+          
+          let codeHtml = '<span class="comments">/**</span><br />';
+          codeHtml += '<span class="space"/><span class="comments">* Today, the ' + CONFIG.dob.day + getOrdinal(CONFIG.dob.day) + ' day of ' + monthName + ', is your birthday.</span><br />';
+          codeHtml += '<span class="space"/><span class="comments">* So I created a webpage to celebrate this special day.</span><br />';
+          codeHtml += '<span class="space"/><span class="comments">*/</span><br />';
+          codeHtml += CONFIG.gender + ' u = <span class="keyword">new</span> ' + CONFIG.gender + '(<span class="string">"' + CONFIG.name + '"</span>);<br />';
+          codeHtml += '<span class="comments">// ' + birthdayStr + ', when the bell rang, your age increased </span><br />';
+          codeHtml += 'Date currentTime = <span class="keyword">new</span> Date(); <br />';
+          codeHtml += 'SimpleDateFormat formatter = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);<br />';
+          codeHtml += 'String dateString = formatter.format(currentTime);<br />';
+          codeHtml += 'if( dateString.equals(<span class="string">"' + dateCondition + ' 00:00:00"</span>) ){</br>';
+          codeHtml += '<span class="placeholder"/>u.age ++;</br>';
+          codeHtml += '}</br>';
+          codeHtml += '<span class="comments">// My best wishes will be with you simultaneously.</span><br />';
+          codeHtml += '<span class="keyword">new</span> Thread (){<br />';
+          codeHtml += '@Override </br>';
+          codeHtml += '<span class="comments">// Forever and ever. I wish</span><br />';
+          codeHtml += 'while(true){</br>';
+          codeHtml += '<span class="comments">// luckiness,</span><br />';
+          codeHtml += '<span class="placeholder"/>u.fortune ++;</br>';
+          codeHtml += '<span class="comments">// happiness,</span><br />';
+          codeHtml += '<span class="placeholder"/>u.happiness ++;</br>';
+          codeHtml += '<span class="comments">// and everything you wish can be achieved.</span><br />';
+          codeHtml += '}.start()</br>';
+          codeHtml += '<span class="comments">// The last thing I wanna say:</span><br />';
+          codeHtml += 'System.out.println(<span class="string">"Happy Birthday!"</span>);';
+          
+          $("#code").html(codeHtml);
+      }
+
+      populateCode();
+
+      var together = new Date();
+      together.setFullYear(CONFIG.dob.year, CONFIG.dob.month - 1, CONFIG.dob.day);
+      together.setHours(0);
+      together.setMinutes(0);
+      together.setSeconds(0);
+      together.setMilliseconds(0);
+
+      if (!document.createElement("canvas").getContext) {
+        var msg = document.createElement("div");
+        msg.id = "errorMsg";
+        msg.innerHTML = "Sorry, browser doesn't support this!";
+        document.body.appendChild(msg);
+        $("#code").css("display", "none");
+        $("#copyright").css("position", "absolute");
+        $("#copyright").css("bottom", "10px");
+        document.execCommand("stop");
+      } else {
+        adjustCodePosition();
+        $("#code").typewriter(function() {
+            startHeartAnimation();
+        });
+      }
+    </script>
+  </body>
+</html>
